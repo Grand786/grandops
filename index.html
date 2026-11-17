@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#5b3df5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Grand Operation</title>
+<style>
+  body { margin: 0; font-family: Arial, sans-serif; background: #f1f3f9; color: #1b2236; text-align: center; padding: 40px 20px; }
+  .box { background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 8px 24px rgba(40,30,120,.12); max-width: 420px; margin: 0 auto; }
+  h1 { color: #5b3df5; margin-top: 0; }
+  .ok { color: #1fb56b; font-weight: 700; }
+  .no { color: #e5484d; font-weight: 700; }
+  p { font-size: 17px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Grand Operation</h1>
+  <p id="net">Checking internet...</p>
+  <p id="sw">Checking offline mode...</p>
+  <p>If both lines say READY, the offline base works.</p>
+</div>
+<script>
+function showNet() {
+  var n = document.getElementById('net');
+  if (navigator.onLine) { n.innerHTML = 'Internet: <span class="ok">ONLINE</span>'; }
+  else { n.innerHTML = 'Internet: <span class="no">OFFLINE</span>'; }
+}
+window.addEventListener('online', showNet);
+window.addEventListener('offline', showNet);
+showNet();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(function() {
+    return navigator.serviceWorker.ready;
+  }).then(function() {
+    document.getElementById('sw').innerHTML = 'Offline mode: <span class="ok">READY</span>';
+  }).catch(function(e) {
+    document.getElementById('sw').innerHTML = 'Offline mode: <span class="no">FAILED</span> ' + e.message;
+  });
+} else {
+  document.getElementById('sw').innerHTML = 'Offline mode: <span class="no">NOT SUPPORTED</span>';
+}
+</script>
+</body>
+</html>
