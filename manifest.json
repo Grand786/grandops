@@ -1,0 +1,13 @@
+{
+  "name": "Grand Operation",
+  "short_name": "GrandOps",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#5b3df5",
+  "theme_color": "#5b3df5",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
