@@ -150,7 +150,7 @@
     <div class="card"><h3>Transfers</h3><div id="tList"></div></div>
   </div>
 
-  <div id="v_stock" class="hide"><div class="card"><h3>Inventory</h3><div id="invList"></div></div></div>
+  <div id="v_stock" class="hide"><div class="card"><h3>Inventory</h3><label>Store</label><select id="invStore" onchange="renderStock()"></select><div id="invList"></div></div></div>
   <div id="v_boxview" class="hide"><div class="card"><h3>Boxes for my store</h3><div id="boxCount" class="chg"></div><div id="boxViewList"></div></div></div>
 
   <div id="v_boxes" class="hide">
@@ -271,6 +271,7 @@ function startApp(c) {
   byId('role').textContent = c.role === 'stock' ? 'Stock Manager' : c.role;
   var names = c.stores.map(function(s) { return s.name; });
   ['store','tFrom','bStore','waStore'].forEach(function(id) { fill(byId(id), names); });
+  fill(byId('invStore'), (c.role === 'owner' ? ['ALL'] : []).concat(names));
   fill(byId('tTo'), c.allStores); fill(byId('forStore'), c.allStores); fill(byId('supplier'), c.suppliers);
   if (c.stockEmail) byId('spEmail').value = c.stockEmail;
   var tabs = TABS[c.role];
@@ -419,7 +420,9 @@ function cached(key, fn, args, render, emptyEl) {
   if (c) render(c);
   else if (emptyEl) byId(emptyEl).innerHTML = '<div class="empty">' + (navigator.onLine ? 'Loading...' : 'Open this once with internet to load') + '</div>';
   if (!navigator.onLine) return;
-  callServer(fn, args).then(function(res) { store_('go_c_' + key, res); render(res); }).catch(function(e) { if (e.message && e.message !== 'offline') showErr(e.message); });
+if (window['busy_' + key]) return;
+window['busy_' + key] = true;
+  callServer(fn, args).then(function(res) { window['busy_' + key] = false; }).catch(function(e) { window['busy_' + key] = false; });
 }
 
 function renderHome() {
@@ -524,7 +527,8 @@ function decideReq(id, ok) {
 }
 
 function renderStock() {
-  cached('inv', 'getInventory', [], function(rows) {
+  var sel = byId('invStore').value || 'ALL';
+  cached('inv_' + sel, 'getInventory', [sel], function(rows) {
     var l = byId('invList');
     if (!rows.length) { l.innerHTML = '<div class="empty">No stock yet</div>'; return; }
     l.innerHTML = rows.map(function(r) {
@@ -532,6 +536,7 @@ function renderStock() {
     }).join('');
   }, 'invList');
 }
+
 
 function boxText(r) { return 'Store: ' + r.store + '\nBox: ' + r.boxNo + '\nWeight: ' + r.weight + ' kg\nSize: ' + r.dims + '\nItems:\n' + r.items; }
 function waLink(storeName, text) {
