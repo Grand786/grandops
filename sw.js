@@ -1,4 +1,4 @@
-var CACHE = 'grandops-v6';
+var CACHE = 'grandops-v7';
 var FILES = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', function(e) {
