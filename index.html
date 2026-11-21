@@ -419,7 +419,7 @@ function cached(key, fn, args, render, emptyEl) {
   if (c) render(c);
   else if (emptyEl) byId(emptyEl).innerHTML = '<div class="empty">' + (navigator.onLine ? 'Loading...' : 'Open this once with internet to load') + '</div>';
   if (!navigator.onLine) return;
-  callServer(fn, args).then(function(res) { save_('go_c_' + key, res); render(res); }).catch(function(e) { if (emptyEl) byId(emptyEl).innerHTML = ' Error: ' + esc(String(e && e.message || e)) + ''; });
+  callServer(fn, args).then(function(res) { try { localStorage.setItem('go_c_' + key, JSON.stringify(res)); } catch (e) {} render(res); }).catch(function(e) { if (emptyEl) byId(emptyEl).innerHTML = ' Error: ' + esc(String(e && e.message || e)) + ''; });
 }
 
 function renderHome() {
