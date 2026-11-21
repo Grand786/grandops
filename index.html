@@ -239,8 +239,7 @@ function callServer(fn, args) {
     s.src = API + '?callback=' + cb + '&fn=' + encodeURIComponent(fn) + '&user=' + encodeURIComponent(USER) + '&pin=' + encodeURIComponent(PIN) + '&args=' + encodeURIComponent(JSON.stringify(args || []));
     document.body.appendChild(s);
     setTimeout(function() { if (!done) { cleanup(); reject(new Error('offline')); } }, 30000);
-  });
-}
+  });}
 
 function doLogin() {
   var em = byId('loginEmail').value.trim().toLowerCase();
@@ -532,8 +531,7 @@ function renderStock() {
     l.innerHTML = rows.map(function(r) {
       return '<div class="item"><div><b>' + esc(r.item) + '</b><small>' + esc(r.store) + ' | In: ' + r.inQty + ' | Out: ' + r.outQty + '</small></div><div class="amt" style="color:' + (r.left < 0 ? '#e5484d' : '#1fb56b') + '">' + r.left + '<small>left</small></div></div>';
     }).join('');
-  }, 'invList');
-}
+  }, 'invList');}
 
 
 function boxText(r) { return 'Store: ' + r.store + '\nBox: ' + r.boxNo + '\nWeight: ' + r.weight + ' kg\nSize: ' + r.dims + '\nItems:\n' + r.items; }
